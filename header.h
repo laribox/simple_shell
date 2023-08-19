@@ -18,16 +18,17 @@
 int _print(char *string);
 int _print_error(char *string);
 
-/* prompt executing function */
 
+/* prompt executing function */
 void cmd_prompt(char *argv[], char *env[]);
 void remove_newline(char *str);
 void execute_command(char *args[], char *env[], char *argv[]);
-void wait_and_free(char *cmd, int *status);
+void execute_and_wait(char *args[], char *env[], char *argv[]);
+
 
 /* string mapulation functions */
 int _strlen(char *s);
 char *_strstr(char *haystack, char *needle);
-
+char *_strdup(const char *src);
 
 #endif /* HEADER_H */

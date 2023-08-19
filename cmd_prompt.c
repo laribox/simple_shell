@@ -11,10 +11,8 @@
 void cmd_prompt(char *argv[], char *env[])
 {
 	char *cmd = NULL;
-	int status;
 	size_t n = 0;
-	pid_t new_pro;
-	char *args[] = {NULL, NULL};
+	char *args[] = {NULL, " /var", " -l", NULL};
 	int is_interactive = isatty(STDIN_FILENO);
 
 	while (1)
@@ -41,19 +39,7 @@ void cmd_prompt(char *argv[], char *env[])
 		remove_newline(cmd);
 
 		args[0] = cmd;
-
-		new_pro = fork();
-		if (new_pro == -1)
-		{
-			free(cmd);
-			exit(EXIT_FAILURE);
-		}
-
-		if (new_pro == 0)
-			execute_command(args, env, argv);
-
-		else
-			wait_and_free(cmd, &status);
+		execute_and_wait(args, env, argv);
 	}
 }
 
@@ -79,6 +65,36 @@ void remove_newline(char *str)
 	}
 }
 
+
+/**
+ * execute_and_wait - Forks a child process,
+ * executes a command, and waits for the child to complete.
+ * @args: Array of strings containing the command and arguments.
+ * @env: Array of strings containing environment variables.
+ * @argv: Array of strings containing command-line arguments.
+ */
+void execute_and_wait(char *args[], char *env[], char *argv[])
+{
+	pid_t new_pro;
+	int status;
+
+	new_pro = fork();
+	if (new_pro == -1)
+	{
+		perror("fork");
+		exit(EXIT_FAILURE);
+	}
+
+	if (new_pro == 0)
+	{
+		execute_command(args, env, argv);
+	}
+	else
+	{
+		wait(&status);
+	}
+}
+
 /**
  * execute_command - Executes a command using execve.
  * @args: Array of strings containing the command and its arguments.
@@ -93,22 +109,8 @@ void execute_command(char *args[], char *env[], char *argv[])
 {
 	if (execve(args[0], args, env) == -1)
 	{
-		(void)argv;
+		_print_error(argv[0]);
+		_print_error(": No such file or directory\n");
 		exit(EXIT_FAILURE);
 	}
 }
-
-/**
- * wait_and_free - Waits for a child process to complete and frees memory.
- * @cmd: The dynamically allocated memory to free.
- * @status: Pointer to the status of the child process.
- *
- * Description: Waits for a child process to complete using the wait
- * system call. Frees the memory allocated for the cmd string.
- */
-void wait_and_free(char *cmd, int *status)
-{
-	(void)cmd;
-	wait(status);
-}
-
