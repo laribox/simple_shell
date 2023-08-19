@@ -1,0 +1,33 @@
+#ifndef HEADER_H
+#define HEADER_H
+
+#include <stdio.h> /* printf*/
+#include <unistd.h> /* fork, execve*/
+#include <stdlib.h>
+#include <string.h> /* strtok*/
+#include <stddef.h>
+#include <errno.h> /*  errno and perror */
+#include <sys/types.h> /* type pid */
+#include <sys/wait.h> /* wait */
+#include <sys/stat.h> /* stat function */
+#include <signal.h> /* signal management */
+#include <fcntl.h> /* open files*/
+
+
+/* printing functions */
+int _print(char *string);
+int _print_error(char *string);
+
+/* prompt executing function */
+
+void cmd_prompt(char *argv[], char *env[]);
+void remove_newline(char *str);
+void execute_command(char *args[], char *env[], char *argv[]);
+void wait_and_free(char *cmd, int *status);
+
+/* string mapulation functions */
+int _strlen(char *s);
+char *_strstr(char *haystack, char *needle);
+
+
+#endif /* HEADER_H */
