@@ -12,7 +12,7 @@ void cmd_prompt(char *argv[], char *env[])
 {
 	char *cmd = NULL;
 	size_t n = 0;
-	char *args[] = {NULL, " /var", " -l", NULL};
+	char *args[] = {NULL, NULL, NULL};
 	int is_interactive = isatty(STDIN_FILENO);
 
 	while (1)
@@ -27,45 +27,23 @@ void cmd_prompt(char *argv[], char *env[])
 			if (feof(stdin))
 			{
 				free(cmd);
+				free_args(args);
 				exit(EXIT_SUCCESS);
 			}
 			else
 			{
+				free_args(args);
 				free(cmd);
 				exit(EXIT_FAILURE);
 			}
 		}
 
 		remove_newline(cmd);
-
-		args[0] = cmd;
+		tokenize_command(cmd, args);
 		execute_and_wait(args, env, argv);
+		free_args(args);
 	}
 }
-
-/**
- * remove_newline - Removes the newline character from a string.
- * @str: The string to modify.
- *
- * Description: Modifies the input string in place by replacing
- * the newline character with a null terminator.
- */
-void remove_newline(char *str)
-{
-	int i = 0;
-
-	while (str[i])
-	{
-		if (str[i] == '\n')
-		{
-			str[i] = '\0';
-			break;
-		}
-		i++;
-	}
-}
-
-
 /**
  * execute_and_wait - Forks a child process,
  * executes a command, and waits for the child to complete.
@@ -113,4 +91,80 @@ void execute_command(char *args[], char *env[], char *argv[])
 		_print_error(": No such file or directory\n");
 		exit(EXIT_FAILURE);
 	}
+}
+
+
+/**
+ * tokenize_command - Tokenizes a command string into an array of strings.
+ * @command: The command string to tokenize.
+ * @args: An array of strings to store the tokenized command.
+ *
+ * Description: This function splits the input command string into tokens
+ * using space characters as delimiters. Each token is dynamically allocated
+ * using strdup and stored in the args array. The last element of the args
+ * array is set to NULL to indicate the end of the array. If memory allocation
+ * fails, an error message is printed and the program exits with EXIT_FAILURE.
+ */
+void tokenize_command(char *command, char *args[])
+{
+	char *token = strtok(command, " ");
+
+	int index = 0;
+
+	while (token != NULL)
+	{
+		args[index] = _strdup(token);
+
+		if (args[index] == NULL)
+		{
+			perror("strdup");
+			free_args(args);
+			exit(EXIT_FAILURE);
+		}
+
+		index++;
+		token = strtok(NULL, " ");
+	}
+
+	args[index] = NULL;
+}
+
+/**
+ * search_command - Search for an executable command in the directories
+ *          listed in the PATH environment variable.
+ * @command: The name of the command to search for.
+ *
+ * Return: A dynamically allocated string containing the full path
+ *         to the executable command if found,
+ *         or NULL if the command was not found in any of the directories.
+ */
+char *search_command(char *command)
+{
+	char *path_env = getenv("PATH");
+	char *path = strtok(path_env, ":");
+	char *full_path = NULL;
+
+	while (path != NULL)
+	{
+		full_path = (char *)malloc(strlen(path) + strlen(command) + 2);
+		if (full_path == NULL)
+		{
+			perror("malloc");
+			exit(EXIT_FAILURE);
+		}
+
+		_strcpy(full_path, path);
+		_strcat(full_path, "/");
+		_strcat(full_path, command);
+
+		if (access(full_path, X_OK) == 0)
+		{
+			return (full_path);
+		}
+
+		free(full_path);
+		path = strtok(NULL, ":");
+	}
+
+	return (NULL);
 }

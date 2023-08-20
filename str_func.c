@@ -67,7 +67,6 @@ char *_strdup(const char *src)
 {
 	if (src == NULL)
 		return (NULL);
-
 	size_t len = 0;
 
 	while (src[len] != '\0')
@@ -75,7 +74,6 @@ char *_strdup(const char *src)
 		len++;
 	}
 	len++;
-
 	char *dest = (char *)malloc(len);
 
 	if (dest != NULL)
@@ -85,6 +83,56 @@ char *_strdup(const char *src)
 			dest[i] = src[i];
 		}
 	}
+	else
+	{
+		free(dest);
+		return (NULL);
+	}
 
+	return (dest);
+}
+/**
+ * _strcat - Concatenate two strings.
+ * @dest: The destination string.
+ * @src: The source string to be concatenated.
+ * Return: A pointer to the destination string `dest`.
+ */
+char *_strcat(char *dest, const char *src)
+{
+	char *temp = dest;
+
+	while (*temp)
+		temp++;
+
+	while (*src)
+	{
+		*temp = *src;
+		temp++;
+		src++;
+	}
+
+	*temp = '\0';
+	return (dest);
+}
+
+/**
+ * _strcpy - Copy a string.
+ * @dest: The destination string.
+ * @src: The source string to be copied.
+ *
+ * Return: A pointer to the destination string `dest`.
+ */
+char *_strcpy(char *dest, const char *src)
+{
+	char *temp = dest;
+
+	while (*src)
+	{
+		*temp = *src;
+		temp++;
+		src++;
+	}
+
+	*temp = '\0';
 	return (dest);
 }

@@ -21,14 +21,23 @@ int _print_error(char *string);
 
 /* prompt executing function */
 void cmd_prompt(char *argv[], char *env[]);
-void remove_newline(char *str);
 void execute_command(char *args[], char *env[], char *argv[]);
 void execute_and_wait(char *args[], char *env[], char *argv[]);
+void tokenize_command(char *command, char *args[]);
+char *search_command(char *command);
 
+/* str_func_1 */
+void remove_newline(char *str);
+
+
+/* free */
+void free_args(char *argv[]);
 
 /* string mapulation functions */
 int _strlen(char *s);
 char *_strstr(char *haystack, char *needle);
 char *_strdup(const char *src);
+char *_strcat(char *dest, const char *src);
+char *_strcpy(char *dest, const char *src);
 
 #endif /* HEADER_H */
