@@ -3,7 +3,7 @@
 
 
 /**
- * free_argv - Frees the memory allocated for an array of strings.
+ * free_args - Frees the memory allocated for an array of strings.
  * @argv: The array of strings to be freed.
  *
  * Description: This function frees the memory allocated for each string

@@ -39,6 +39,13 @@ void cmd_prompt(char *argv[], char *env[])
 		}
 
 		remove_newline(cmd);
+		if (_strlen(cmd) == 0 || _strspn(cmd, " \t\n\v\f\r") == _strlen(cmd))
+			continue;
+		if (strcmp(cmd, "exit") == 0)
+		{	free_args(args);
+			free(cmd);
+			exit(EXIT_SUCCESS);
+		}
 		tokenize_command(cmd, args);
 		execute_and_wait(args, env, argv);
 		free_args(args);
@@ -55,7 +62,14 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
 {
 	pid_t new_pro;
 	int status;
+	char *command = search_command(args[0]);
 
+	(void)argv;
+	if (command == NULL)
+	{
+		free(command);
+		return;
+	}
 	new_pro = fork();
 	if (new_pro == -1)
 	{
@@ -65,11 +79,12 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
 
 	if (new_pro == 0)
 	{
-		execute_command(args, env, argv);
+		execute_command(command, args, env);
 	}
 	else
 	{
 		wait(&status);
+		free(command);
 	}
 }
 
@@ -77,22 +92,19 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
  * execute_command - Executes a command using execve.
  * @args: Array of strings containing the command and its arguments.
  * @env: Array of strings containing environment variables.
- * @argv: Array of strings containing command-line arguments.
+ * @command: command to execute
  *
  * Description: Executes the command specified in the args array
  * using the execve system call. Prints an error message if the
  * command execution fails.
  */
-void execute_command(char *args[], char *env[], char *argv[])
+void execute_command(char *command, char *args[], char *env[])
 {
-	if (execve(args[0], args, env) == -1)
+	if (execve(command, args, env) == -1)
 	{
-		_print_error(argv[0]);
-		_print_error(": No such file or directory\n");
 		exit(EXIT_FAILURE);
 	}
 }
-
 
 /**
  * tokenize_command - Tokenizes a command string into an array of strings.
@@ -113,15 +125,16 @@ void tokenize_command(char *command, char *args[])
 
 	while (token != NULL)
 	{
-		args[index] = _strdup(token);
-
-		if (args[index] == NULL)
+		if (_strlen(token) > 0)
 		{
-			perror("strdup");
-			free_args(args);
-			exit(EXIT_FAILURE);
+			args[index] = _strdup(token);
+			if (args[index] == NULL)
+			{
+				perror("strdup");
+				free_args(args);
+				exit(EXIT_FAILURE);
+			}
 		}
-
 		index++;
 		token = strtok(NULL, " ");
 	}
@@ -140,31 +153,42 @@ void tokenize_command(char *command, char *args[])
  */
 char *search_command(char *command)
 {
+	if (access(command, X_OK) == 0)
+		return (_strdup(command));
 	char *path_env = getenv("PATH");
-	char *path = strtok(path_env, ":");
+	char *path_env_copy = strdup(path_env);
+	char *path = strtok(path_env_copy, ":");
 	char *full_path = NULL;
+	char *result = NULL;
 
 	while (path != NULL)
 	{
-		full_path = (char *)malloc(strlen(path) + strlen(command) + 2);
+		full_path = (char *)malloc(_strlen(path) + _strlen(command) + 2);
 		if (full_path == NULL)
 		{
+			free(path_env_copy);
 			perror("malloc");
 			exit(EXIT_FAILURE);
 		}
-
 		_strcpy(full_path, path);
 		_strcat(full_path, "/");
 		_strcat(full_path, command);
-
 		if (access(full_path, X_OK) == 0)
 		{
-			return (full_path);
+			result = strdup(full_path);
+			if (result == NULL)
+			{free(path_env_copy);
+				perror("strdup");
+				free(full_path);
+				exit(EXIT_FAILURE);
+			}
+			free(path_env_copy);
+			free(full_path);
+			return (result);
 		}
-
 		free(full_path);
 		path = strtok(NULL, ":");
 	}
-
+	free(path_env_copy);
 	return (NULL);
 }

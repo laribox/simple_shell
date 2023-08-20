@@ -21,14 +21,15 @@ int _print_error(char *string);
 
 /* prompt executing function */
 void cmd_prompt(char *argv[], char *env[]);
-void execute_command(char *args[], char *env[], char *argv[]);
+void execute_command(char *command, char *args[], char *env[]);
 void execute_and_wait(char *args[], char *env[], char *argv[]);
 void tokenize_command(char *command, char *args[]);
 char *search_command(char *command);
 
 /* str_func_1 */
 void remove_newline(char *str);
-
+int _strcmp(const char *s1, const char *s2);
+int _strspn(const char *str1, const char *str2);
 
 /* free */
 void free_args(char *argv[]);
