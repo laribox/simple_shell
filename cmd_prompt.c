@@ -24,9 +24,9 @@ void cmd_prompt(char *argv[], char *env[])
 
 		if (size == -1)
 		{
-				free(cmd);
-				free_args(args);
-				exit(EXIT_FAILURE);
+			free(cmd);
+			free_args(args);
+			exit(EXIT_FAILURE);
 		}
 
 		remove_newline(cmd);
@@ -52,11 +52,6 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
 	char *command = search_command(args[0], env);
 
 	(void)argv;
-	if (command == NULL)
-	{
-		free(command);
-		return;
-	}
 	new_pro = fork();
 	if (new_pro == -1)
 	{
@@ -89,8 +84,15 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
  */
 void execute_command(char *command, char *args[], char *env[])
 {
+	
+	if (command == NULL)
+	{	perror("");
+		free(command);
+		exit(2);
+	}
 	if (execve(command, args, env) == -1)
 	{
+		perror("exec");
 		exit(ENOENT);
 	}
 }
@@ -151,11 +153,9 @@ char *search_command(char *command, char *env[])
 	char *result = NULL;
 
 	while (path != NULL)
-	{
-		full_path = (char *)malloc(_strlen(path) + _strlen(command) + 2);
+	{	full_path = (char *)malloc(_strlen(path) + _strlen(command) + 2);
 		if (full_path == NULL)
-		{
-			free(path_env_copy);
+		{	free(path_env_copy);
 			perror("malloc");
 			exit(errno);
 		}
@@ -163,8 +163,7 @@ char *search_command(char *command, char *env[])
 		_strcat(full_path, "/");
 		_strcat(full_path, command);
 		if (access(full_path, X_OK) == 0)
-		{
-			result = _strdup(full_path);
+		{	result = _strdup(full_path);
 			if (result == NULL)
 			{free(path_env_copy);
 				perror("strdup");
