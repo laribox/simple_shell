@@ -24,18 +24,9 @@ void cmd_prompt(char *argv[], char *env[])
 
 		if (size == -1)
 		{
-			if (feof(stdin))
-			{
 				free(cmd);
 				free_args(args);
-				exit(EXIT_SUCCESS);
-			}
-			else
-			{
-				free_args(args);
-				free(cmd);
 				exit(EXIT_FAILURE);
-			}
 		}
 
 		remove_newline(cmd);
@@ -69,7 +60,7 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
 	new_pro = fork();
 	if (new_pro == -1)
 	{
-		/*perror("fork");*/
+		perror("fork");
 		exit(errno);
 	}
 
@@ -80,6 +71,8 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
 	else
 	{
 		wait(&status);
+		if (WIFEXITED(status))
+			errno =  WEXITSTATUS(status);
 		free(command);
 	}
 }
@@ -98,7 +91,7 @@ void execute_command(char *command, char *args[], char *env[])
 {
 	if (execve(command, args, env) == -1)
 	{
-		exit(2);
+		exit(ENOENT);
 	}
 }
 
@@ -126,7 +119,7 @@ void tokenize_command(char *command, char *args[])
 			args[index] = _strdup(token);
 			if (args[index] == NULL)
 			{
-				/*perror("strdup");*/
+				perror("strdup");
 				free_args(args);
 				exit(errno);
 			}
@@ -163,7 +156,7 @@ char *search_command(char *command, char *env[])
 		if (full_path == NULL)
 		{
 			free(path_env_copy);
-			/*perror("malloc");*/
+			perror("malloc");
 			exit(errno);
 		}
 		_strcpy(full_path, path);
@@ -174,7 +167,7 @@ char *search_command(char *command, char *env[])
 			result = _strdup(full_path);
 			if (result == NULL)
 			{free(path_env_copy);
-				/*perror("strdup");*/
+				perror("strdup");
 				free(full_path);
 				exit(errno);
 			}

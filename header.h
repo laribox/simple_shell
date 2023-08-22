@@ -31,7 +31,7 @@ void remove_newline(char *str);
 int _strcmp(const char *s1, const char *s2);
 int _strspn(const char *str1, const char *str2);
 int _strncmp(char *s1, char *s2, int n);
-
+void _itoa(int num, char *str);
 
 /* free */
 void free_args(char *argv[]);

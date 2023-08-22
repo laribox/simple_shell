@@ -112,3 +112,51 @@ int _strncmp(char *s1, char *s2, int n)
 
 	return (0);
 }
+
+
+/**
+ * _itoa - converts an integer to a string
+ * @num: the integer to convert
+ * @str: buffer to store the resulting string
+ */
+void _itoa(int num, char *str)
+{
+	int i = 0;
+	int is_negative = 0;
+
+	if (num == 0)
+	{
+		str[i++] = '0';
+		str[i] = '\0';
+		return;
+	}
+	if (num < 0)
+	{
+		is_negative = 1;
+		num = -num;
+	}
+	while (num > 0)
+	{
+		int digit = num % 10;
+
+		str[i++] = digit + '0';
+		num /= 10;
+	}
+	if (is_negative)
+		str[i++] = '-';
+
+	str[i] = '\0';
+
+	int start = 0;
+	int end = i - 1;
+
+	while (start < end)
+	{
+		char temp = str[start];
+
+		str[start] = str[end];
+		str[end] = temp;
+		start++;
+		end--;
+	}
+}
