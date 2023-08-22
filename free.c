@@ -22,3 +22,19 @@ void free_args(char *argv[])
 		argv[i] = NULL;
 	}
 }
+
+
+/**
+ * _exit_shell - Clean up and exit the shell if the exit command is given.
+ * @cmd: The command string to free.
+ * @args: The argument array to free.
+ */
+void _exit_shell(char *cmd, char *args[])
+{
+	if (_strcmp(cmd, "exit") == 0)
+	{
+		free_args(args);
+		free(cmd);
+		exit(EXIT_SUCCESS);
+	}
+}

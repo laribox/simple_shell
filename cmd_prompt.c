@@ -13,10 +13,10 @@ void cmd_prompt(char *argv[], char *env[])
 	char *cmd = NULL;
 	size_t n = 0;
 	char *args[] = {NULL, NULL, NULL};
-	int is_interactive = isatty(STDIN_FILENO);
+	int is_interactive = isatty(STDIN_FILENO), count = 0;
 
 	while (1)
-	{
+	{	count++;
 		if (is_interactive)
 			_print("#cisfun$ ");
 
@@ -41,11 +41,7 @@ void cmd_prompt(char *argv[], char *env[])
 		remove_newline(cmd);
 		if (_strlen(cmd) == 0 || _strspn(cmd, " \t\n\v\f\r") == _strlen(cmd))
 			continue;
-		if (strcmp(cmd, "exit") == 0)
-		{	free_args(args);
-			free(cmd);
-			exit(EXIT_SUCCESS);
-		}
+		_exit_shell(cmd, args);
 		tokenize_command(cmd, args);
 		execute_and_wait(args, env, argv);
 		free_args(args);
@@ -62,7 +58,7 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
 {
 	pid_t new_pro;
 	int status;
-	char *command = search_command(args[0]);
+	char *command = search_command(args[0], env);
 
 	(void)argv;
 	if (command == NULL)
@@ -73,8 +69,8 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
 	new_pro = fork();
 	if (new_pro == -1)
 	{
-		perror("fork");
-		exit(EXIT_FAILURE);
+		/*perror("fork");*/
+		exit(errno);
 	}
 
 	if (new_pro == 0)
@@ -102,7 +98,7 @@ void execute_command(char *command, char *args[], char *env[])
 {
 	if (execve(command, args, env) == -1)
 	{
-		exit(EXIT_FAILURE);
+		exit(2);
 	}
 }
 
@@ -130,9 +126,9 @@ void tokenize_command(char *command, char *args[])
 			args[index] = _strdup(token);
 			if (args[index] == NULL)
 			{
-				perror("strdup");
+				/*perror("strdup");*/
 				free_args(args);
-				exit(EXIT_FAILURE);
+				exit(errno);
 			}
 		}
 		index++;
@@ -146,17 +142,17 @@ void tokenize_command(char *command, char *args[])
  * search_command - Search for an executable command in the directories
  *          listed in the PATH environment variable.
  * @command: The name of the command to search for.
- *
+ * @env: Array of strings containing environment variables.
  * Return: A dynamically allocated string containing the full path
  *         to the executable command if found,
  *         or NULL if the command was not found in any of the directories.
  */
-char *search_command(char *command)
+char *search_command(char *command, char *env[])
 {
 	if (access(command, X_OK) == 0)
 		return (_strdup(command));
-	char *path_env = getenv("PATH");
-	char *path_env_copy = strdup(path_env);
+	char *path_env = _getenv("PATH", env);
+	char *path_env_copy = _strdup(path_env);
 	char *path = strtok(path_env_copy, ":");
 	char *full_path = NULL;
 	char *result = NULL;
@@ -167,20 +163,20 @@ char *search_command(char *command)
 		if (full_path == NULL)
 		{
 			free(path_env_copy);
-			perror("malloc");
-			exit(EXIT_FAILURE);
+			/*perror("malloc");*/
+			exit(errno);
 		}
 		_strcpy(full_path, path);
 		_strcat(full_path, "/");
 		_strcat(full_path, command);
 		if (access(full_path, X_OK) == 0)
 		{
-			result = strdup(full_path);
+			result = _strdup(full_path);
 			if (result == NULL)
 			{free(path_env_copy);
-				perror("strdup");
+				/*perror("strdup");*/
 				free(full_path);
-				exit(EXIT_FAILURE);
+				exit(errno);
 			}
 			free(path_env_copy);
 			free(full_path);

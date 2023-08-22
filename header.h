@@ -24,15 +24,22 @@ void cmd_prompt(char *argv[], char *env[]);
 void execute_command(char *command, char *args[], char *env[]);
 void execute_and_wait(char *args[], char *env[], char *argv[]);
 void tokenize_command(char *command, char *args[]);
-char *search_command(char *command);
+char *search_command(char *command, char *env[]);
 
 /* str_func_1 */
 void remove_newline(char *str);
 int _strcmp(const char *s1, const char *s2);
 int _strspn(const char *str1, const char *str2);
+int _strncmp(char *s1, char *s2, int n);
+
 
 /* free */
 void free_args(char *argv[]);
+void _exit_shell(char *cmd, char *args[]);
+
+
+/* env.c */
+char *_getenv(char *name, char *env[]);
 
 /* string mapulation functions */
 int _strlen(char *s);
