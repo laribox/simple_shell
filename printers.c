@@ -1,8 +1,8 @@
 #include "shell.h"
 
 /**
- * _print - writes a array of chars in the standar output
- * @string: pointer to the array of chars
+ * _print - writes string in the standar output
+ * @string: pointer to the string
  * Return: the number of bytes writed or .
  * On error, -1 is returned, and errno is set appropriately.
  */
@@ -11,8 +11,8 @@ int _print(char *string)
 	return (write(STDOUT_FILENO, string, _strlen(string)));
 }
 /**
- * _printe - writes a array of chars in the standar error
- * @string: pointer to the array of chars
+ * _printe - writes a string in the standar error
+ * @string: pointer to the string
  * Return: the number of bytes writed or .
  * On error, -1 is returned, and errno is set appropriately.
  */

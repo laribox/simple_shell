@@ -1,10 +1,10 @@
 #include "shell.h"
 /**
- * main - initialize the variables of the program
- * @argc: number of values received from the command line
+ * main - Start the program
+ * @argc: count of argv
  * @argv: values received from the command line
- * @env: number of values received from the command line
- * Return: zero on succes.
+ * @env: envirement
+ * Return: zero.
  */
 int main(int argc, char *argv[], char *env[])
 {
@@ -16,8 +16,8 @@ int main(int argc, char *argv[], char *env[])
 	signal(SIGINT, handle_ctrl_c);
 
 	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO) && argc == 1)
-	{/* We are in the terminal, interactive mode */
-		errno = 2;/*???????*/
+	{
+		errno = 2;
 		prompt = PROMPT_MSG;
 	}
 	errno = 0;
@@ -40,7 +40,7 @@ void initialize_data(data_of_program *data, int argc, char *argv[], char **env)
 	data->input_line = NULL;
 	data->command_name = NULL;
 	data->exec_counter = 0;
-	/* define the file descriptor to be readed*/
+	
 	if (argc == 1)
 		data->file_descriptor = STDIN_FILENO;
 	else
@@ -67,8 +67,9 @@ void initialize_data(data_of_program *data, int argc, char *argv[], char **env)
 	data->env[i] = NULL;
 	env = data->env;
 }
+
 /**
- * sisifo - its a infinite loop that shows the prompt
+ * inter_loop - its a infinite loop that shows the prompt
  * @prompt: prompt to be printed
  * @data: its a infinite loop that shows the prompt
  */
@@ -84,7 +85,7 @@ void inter_loop(char *prompt, data_of_program *data)
 		if (error_code == EOF)
 		{
 			release_all_data(data);
-			exit(errno); /* if EOF is the fisrt Char of string, exit*/
+			exit(errno);
 		}
 		if (string_len >= 1)
 		{
