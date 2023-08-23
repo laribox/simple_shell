@@ -86,7 +86,6 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
  */
 void execute_command(char *command, char *args[], char *env[])
 {
-	
 	if (command == NULL)
 	{	perror("");
 		free(command);
