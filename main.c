@@ -21,7 +21,7 @@ int main(int argc, char *argv[], char *env[])
 		prompt = PROMPT_MSG;
 	}
 	errno = 0;
-	sisifo(prompt, data);
+	inter_loop(prompt, data);
 	return (0);
 }
 
@@ -72,7 +72,7 @@ void initialize_data(data_of_program *data, int argc, char *argv[], char **env)
  * @prompt: prompt to be printed
  * @data: its a infinite loop that shows the prompt
  */
-void sisifo(char *prompt, data_of_program *data)
+void inter_loop(char *prompt, data_of_program *data)
 {
 	int error_code = 0, string_len = 0;
 

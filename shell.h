@@ -46,7 +46,7 @@ typedef struct shell_info
 
 /*========  main.c  ========*/
 void initialize_data(data_of_program *data, int arc, char *argv[], char **env);
-void sisifo(char *prompt, data_of_program *data);
+void inter_loop(char *prompt, data_of_program *data);
 
 /*========  utils.c  ========*/
 int _getline(data_of_program *data);
@@ -85,7 +85,7 @@ char *_strcat(char *string1, char *string2);
 void str_reverse(char *string);
 
 /*======== int_func.c ========*/
-void long_to_string(long number, char *string, int base);
+void long_to_string(long number, char *str, int base);
 int _atoi(char *s);
 int count_characters(char *string, char *character);
 

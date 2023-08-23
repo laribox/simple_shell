@@ -92,9 +92,8 @@ char **get_directories(data_of_program *data)
 }
 
 /**
- * check_file_exists - checks if exists a file, if it is not a dairectory and
- * if it has excecution permisions for permisions.
- * @full_path: pointer to the full file name
+ * check_file_exists - checks if a file exists.
+ * @full_path: pointer to file name
  * Return: 0 on success, or error code if it exists.
  */
 

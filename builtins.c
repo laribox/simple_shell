@@ -2,9 +2,9 @@
 
 
 /**
- * builtins - search for match and execute the associate builtin
+ * builtins - search for match and execute the associate function
  * @data: struct for the program's data
- * Return: Returns the return of the function executed is there is a match,
+ * Return: Returns the function return,
  * otherwise returns -1.
  **/
 int builtins(data_of_program *data)
@@ -67,9 +67,9 @@ int _env(data_of_program *data)
 
 /**
  * env_get_key - gets the value of an environment variable
- * @key: the environment variable of interest
+ * @key: the environment variable
  * @data: struct of the program's data
- * Return: a pointer to the value of the variable or NULL if it doesn't exist
+ * Return: the value of the variable or NULL if it doesn't exist
  */
 char *env_get_key(char *key, data_of_program *data)
 {
