@@ -17,12 +17,12 @@
 /* printing functions */
 int _print(char *string);
 int _print_error(char *string);
-
+void print_custom_error(char *cmd_name, int counter, char *error_msg);
 
 /* prompt executing function */
 void cmd_prompt(char *argv[], char *env[]);
-void execute_command(char *command, char *args[], char *env[]);
-void execute_and_wait(char *args[], char *env[], char *argv[]);
+void execute_command(char *command, char *argv[],char *args[], char *env[], int count);
+void execute_and_wait(char *args[], char *env[], char *argv[], int count);
 void tokenize_command(char *command, char *args[]);
 char *search_command(char *command, char *env[]);
 

@@ -36,7 +36,7 @@ void cmd_prompt(char *argv[], char *env[])
 			continue;
 		_exit_shell(cmd, args);
 		tokenize_command(cmd, args);
-		execute_and_wait(args, env, argv);
+		execute_and_wait(args, env, argv, count);
 		free_args(args);
 	}
 }
@@ -47,7 +47,7 @@ void cmd_prompt(char *argv[], char *env[])
  * @env: Array of strings containing environment variables.
  * @argv: Array of strings containing command-line arguments.
  */
-void execute_and_wait(char *args[], char *env[], char *argv[])
+void execute_and_wait(char *args[], char *env[], char *argv[], int count)
 {
 	pid_t new_pro;
 	int status;
@@ -63,7 +63,7 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
 
 	if (new_pro == 0)
 	{
-		execute_command(command, args, env);
+		execute_command(command, argv, args, env, count);
 	}
 	else
 	{
@@ -84,10 +84,12 @@ void execute_and_wait(char *args[], char *env[], char *argv[])
  * using the execve system call. Prints an error message if the
  * command execution fails.
  */
-void execute_command(char *command, char *args[], char *env[])
+void execute_command(char *command, char *argv[],
+		char *args[], char *env[], int count)
 {
 	if (command == NULL)
-	{	perror("");
+	{
+		print_custom_error(argv[0], count, args[0]);
 		free(command);
 		exit(2);
 	}

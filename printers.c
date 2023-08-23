@@ -41,4 +41,6 @@ void print_custom_error(char *cmd_name, int counter, char *error_msg)
 	_print_error(counter_str);
 	_print_error(": ");
 	_print_error(error_msg);
+	_print_error(": ");
+	perror("");
 }
