@@ -122,7 +122,7 @@ int _strncmp(char *s1, char *s2, int n)
 void _itoa(int num, char *str)
 {
 	int i = 0;
-	int is_negative = 0;
+	int is_negative = 0, start, end;
 
 	if (num == 0)
 	{
@@ -146,9 +146,8 @@ void _itoa(int num, char *str)
 		str[i++] = '-';
 
 	str[i] = '\0';
-
-	int start = 0;
-	int end = i - 1;
+	start = 0;
+	end = i - 1;
 
 	while (start < end)
 	{

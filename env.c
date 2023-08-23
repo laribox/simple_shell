@@ -10,14 +10,15 @@
  */
 char *_getenv(char *name, char *env[])
 {
+	int name_len = _strlen(name), i;
+
 	/* Check for invalid input */
 	if (name == NULL || env == NULL)
 		return (NULL);
 
-	int name_len = _strlen(name);
 
 	/* Iterate through the array of environment variables */
-	for (int i = 0; env[i] != NULL; i++)
+	for (i = 0; env[i] != NULL; i++)
 	{
 		char *variable = env[i];
 

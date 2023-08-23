@@ -65,20 +65,22 @@ char *_strstr(char *haystack, char *needle)
  */
 char *_strdup(const char *src)
 {
+	size_t len = 0, i;
+	char *dest;
+
 	if (src == NULL)
 		return (NULL);
-	size_t len = 0;
 
 	while (src[len] != '\0')
 	{
 		len++;
 	}
 	len++;
-	char *dest = (char *)malloc(len);
+	dest = (char *)malloc(len);
 
 	if (dest != NULL)
 	{
-		for (size_t i = 0; i < len; i++)
+		for (i = 0; i < len; i++)
 		{
 			dest[i] = src[i];
 		}
