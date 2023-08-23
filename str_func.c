@@ -59,8 +59,8 @@ char *str_duplicate(char *src)
 
 /**
  * str_compare - Compare two strings
- * @string1: String one, or the shorter
- * @string2: String two, or the longer
+ * @s1: String one, or the shorter
+ * @s2: String two, or the longer
  * @number: number of characters to be compared, 0 if infinite
  * Return: 1 if the strings are equals,0 if the strings are different
  */
