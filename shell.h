@@ -79,7 +79,7 @@ int _print_error(int errorcode, data_of_program *data);
 
 /*======== str_func.c ========*/
 int _strlen(char *s);
-char *str_duplicate(char *string);
+char *str_duplicate(char *src);
 int str_compare(char *string1, char *string2, int number);
 char *_strcat(char *string1, char *string2);
 void str_reverse(char *string);
