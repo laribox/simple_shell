@@ -1,46 +1,70 @@
-#include "header.h"
+#include "shell.h"
 
 /**
- * _print - writes string to the standar output
+ * _print - writes a array of chars in the standar output
  * @string: pointer to the array of chars
  * Return: the number of bytes writed or .
  * On error, -1 is returned, and errno is set appropriately.
  */
-
 int _print(char *string)
 {
 	return (write(STDOUT_FILENO, string, _strlen(string)));
 }
 /**
- * _print_error - writes string to the standar error
+ * _printe - writes a array of chars in the standar error
  * @string: pointer to the array of chars
  * Return: the number of bytes writed or .
  * On error, -1 is returned, and errno is set appropriately.
  */
-
-int _print_error(char *string)
+int _printe(char *string)
 {
 	return (write(STDERR_FILENO, string, _strlen(string)));
 }
 
-
 /**
- * print_custom_error - prints a custom error message
- * @cmd_name: the name of the command (argv[0])
- * @counter: the command counter
- * @error_msg: the error message to be printed
+ * _print_error - writes a array of chars in the standart error
+ * @data: a pointer to the program's data'
+ * @errorcode: error code to print
+ * Return: the number of bytes writed or .
+ * On error, -1 is returned, and errno is set appropriately.
  */
-void print_custom_error(char *cmd_name, int counter, char *error_msg)
+int _print_error(int errorcode, data_of_program *data)
 {
-	char counter_str[20];
+	char n_as_string[10] = {'\0'};
 
-	_itoa(counter, counter_str);
+	long_to_string((long) data->exec_counter, n_as_string, 10);
 
-	_print_error(cmd_name);
-	_print_error(": ");
-	_print_error(counter_str);
-	_print_error(": ");
-	_print_error(error_msg);
-	_print_error(": ");
-	perror("");
+	if (errorcode == 2 || errorcode == 3)
+	{
+		_printe(data->program_name);
+		_printe(": ");
+		_printe(n_as_string);
+		_printe(": ");
+		_printe(data->tokens[0]);
+		if (errorcode == 2)
+			_printe(": Illegal number: ");
+		else
+			_printe(": can't cd to ");
+		_printe(data->tokens[1]);
+		_printe("\n");
+	}
+	else if (errorcode == 127)
+	{
+		_printe(data->program_name);
+		_printe(": ");
+		_printe(n_as_string);
+		_printe(": ");
+		_printe(data->command_name);
+		_printe(": not found\n");
+	}
+	else if (errorcode == 126)
+	{
+		_printe(data->program_name);
+		_printe(": ");
+		_printe(n_as_string);
+		_printe(": ");
+		_printe(data->command_name);
+		_printe(": Permission denied\n");
+	}
+	return (0);
 }

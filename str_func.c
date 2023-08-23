@@ -1,4 +1,5 @@
-#include "header.h"
+#include "shell.h"
+
 
 /**
  * _strlen - Returns the length of a string.
@@ -18,88 +19,83 @@ int _strlen(char *s)
 	return (length);
 }
 
-
 /**
- * _strstr - Locates a substring within a string.
- * @haystack: The string to search in.
- * @needle: The substring to search for.
- *
- * Return: A pointer to the beginning of the located substring,
- *         or NULL if the substring is not found.
+ * str_duplicate - duplicates an string
+ * @string: String to be copied
+ * Return: pointer to the array
  */
-char *_strstr(char *haystack, char *needle)
+char *str_duplicate(char *string)
 {
-	if (*needle == '\0')
+	char *result;
+	int length, i;
+
+	if (string == NULL)
+		return (NULL);
+
+	length = _strlen(string) + 1;
+
+	result = malloc(sizeof(char) * length);
+
+	if (result == NULL)
 	{
-		return (haystack);
+		errno = ENOMEM;
+		perror("Error");
+		return (NULL);
+	}
+	for (i = 0; i < length ; i++)
+	{
+		result[i] = string[i];
 	}
 
-	while (*haystack != '\0')
-	{
-		char *h = haystack;
-		char *n = needle;
-
-		while (*n != '\0' && *h == *n)
-		{
-			h++;
-			n++;
-		}
-
-		if (*n == '\0')
-		{
-			return (haystack);
-		}
-
-		haystack++;
-	}
-
-	return (NULL);
+	return (result);
 }
 
 /**
- * _strdup - Duplicates a string.
- * @src: The source string to duplicate.
- *
- * Return: A pointer to the duplicated string (allocated memory),
- * or NULL if memory allocation fails or src is NULL.
+ * str_compare - Compare two strings
+ * @string1: String one, or the shorter
+ * @string2: String two, or the longer
+ * @number: number of characters to be compared, 0 if infinite
+ * Return: 1 if the strings are equals,0 if the strings are different
  */
-char *_strdup(const char *src)
+int str_compare(char *string1, char *string2, int number)
 {
-	size_t len = 0, i;
-	char *dest;
+	int iterator;
 
-	if (src == NULL)
-		return (NULL);
+	if (string1 == NULL && string2 == NULL)
+		return (1);
 
-	while (src[len] != '\0')
+	if (string1 == NULL || string2 == NULL)
+		return (0);
+
+	if (number == 0) /* infinite longitud */
 	{
-		len++;
-	}
-	len++;
-	dest = (char *)malloc(len);
-
-	if (dest != NULL)
-	{
-		for (i = 0; i < len; i++)
+		if (_strlen(string1) != _strlen(string2))
+			return (0);
+		for (iterator = 0; string1[iterator]; iterator++)
 		{
-			dest[i] = src[i];
+			if (string1[iterator] != string2[iterator])
+				return (0);
 		}
+		return (1);
 	}
-	else
+	else /* if there is a number of chars to be compared */
 	{
-		free(dest);
-		return (NULL);
+		for (iterator = 0; iterator < number ; iterator++)
+		{
+			if (string1[iterator] != string2[iterator])
+			return (0);
+		}
+		return (1);
 	}
-
-	return (dest);
 }
+
 /**
  * _strcat - Concatenate two strings.
  * @dest: The destination string.
  * @src: The source string to be concatenated.
  * Return: A pointer to the destination string `dest`.
  */
-char *_strcat(char *dest, const char *src)
+char *_strcat(char *dest, char *src)
 {
 	char *temp = dest;
 
@@ -117,24 +113,23 @@ char *_strcat(char *dest, const char *src)
 	return (dest);
 }
 
+
 /**
- * _strcpy - Copy a string.
- * @dest: The destination string.
- * @src: The source string to be copied.
+ * str_reverse - reverses a string.
  *
- * Return: A pointer to the destination string `dest`.
+ * @string: pointer to string.
+ * Return: void.
  */
-char *_strcpy(char *dest, const char *src)
+void str_reverse(char *string)
 {
-	char *temp = dest;
 
-	while (*src)
+	int i = 0, length = _strlen(string) - 1;
+	char hold;
+
+	while (i < length)
 	{
-		*temp = *src;
-		temp++;
-		src++;
+		hold = string[i];
+		string[i++] = string[length];
+		string[length--] = hold;
 	}
-
-	*temp = '\0';
-	return (dest);
 }
