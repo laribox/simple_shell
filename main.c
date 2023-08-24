@@ -40,7 +40,7 @@ void initialize_data(data_of_program *data, int argc, char *argv[], char **env)
 	data->input_line = NULL;
 	data->command_name = NULL;
 	data->exec_counter = 0;
-	
+
 	if (argc == 1)
 		data->file_descriptor = STDIN_FILENO;
 	else
